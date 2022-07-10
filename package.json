@@ -14,5 +14,8 @@
     "bom"
   ],
   "author": "Evan X. Merz",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "graphology": "^0.24.1"
+  }
 }
