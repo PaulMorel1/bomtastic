@@ -1,4 +1,5 @@
 const fs = require('fs'); // needed for reading & writing to files
+const { SimpleLogger } = require('../src/SimpleLogger.js');
 
 /*
   Read a json file and return an object with the parsed json.
@@ -126,7 +127,7 @@ function getChildren(packages, dependencyGraphKey, ignoreDev = true) {
     // for each package in the dependencies
     Object.keys(dependencies).forEach((packageName) => {
       const childVersion = typeof dependencies[packageName] === 'string' ? dependencies[packageName] : dependencies[packageName].version;
-      const childKey = helpers.makeDependencyGraphKey(packageName, childVersion.replace(/[^0123456789.]/g,''));
+      const childKey = makeDependencyGraphKey(packageName, childVersion.replace(/[^0123456789.]/g,''));
 
       // if that package shouldn't be ignored
       if(!packages[childKey]) {
