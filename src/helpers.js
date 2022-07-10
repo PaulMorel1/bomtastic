@@ -44,13 +44,11 @@ function writeJsonToFile(json, outputFilePath) {
   }
 }
 
-function makeNode(dependencyGraphKey, version, dev) {
+function makeNodeAttributes(dependencyGraphKey, version, dev) {
   return {
     name: dependencyGraphKey,
     versions: [version],
     dev: !!dev,
-    children: [],
-    parents: [],
   }
 }
 
@@ -149,70 +147,11 @@ function getChildren(packages, dependencyGraphKey, ignoreDev = true) {
   return children;
 }
 
-/*
-  Calculate subgraph size using DFS.
-
-  BUG: Infinite call stack.
-  FIX: The dependency graph MUST use version in the key.
-  THEN: The duplicate version notation must be post-processing
-*/
-function annotateSubgraphSize(dependencyGraphKey, dependencyGraph, visited = {}) {
-  SimpleLogger.log(`Calculating subgraph size for ${dependencyGraphKey}...`);
-
-  if(!visited[dependencyGraphKey]) {
-    // push the current key onto the visited list
-    visited[dependencyGraphKey] = true;
-
-    // count the current node as 1 item
-    let sum = 1;
-
-    if(dependencyGraph[dependencyGraphKey].children && Array.isArray(dependencyGraph[dependencyGraphKey].children)) {
-      if(dependencyGraph[dependencyGraphKey].children.length > 0) {
-        // recurse on each child
-        dependencyGraph[dependencyGraphKey].children.forEach((key) => {
-          if(dependencyGraph[key]) {
-            if(dependencyGraph[key].subgraphSize) {
-              sum += dependencyGraph[key].subgraphSize;
-            } else {
-              sum += annotateSubgraphSize(key, dependencyGraph, visited);
-            }
-          }
-        });
-      }
-    }
-
-    SimpleLogger.log(`${dependencyGraphKey} has subgraph size ${sum}.`);
-
-    // annotate this node
-    dependencyGraph[dependencyGraphKey].subgraphSize = sum;
-
-    return sum;
-  }
-
-  // TODO: What to do for nodes that HAVE been visited, but don't have a subgraph size?
-  // maybe try logging it and returning 1 just to get more info?
-
-  // push them into a queue, then try to do them at the end
-
-  if(!dependencyGraph[dependencyGraphKey]) {
-    throw new Error(`Unable to complete calculation of subgraph size for key ${dependencyGraphKey} because that key is not in the dependency graph!`);
-  } else if(!dependencyGraph[dependencyGraphKey].subgraphSize && dependencyGraph[dependencyGraphKey].subgraphSize != 0) {
-    SimpleLogger.log({ children: dependencyGraph[dependencyGraphKey].children });
-    SimpleLogger.log(`\n\nWARNING: Unable to complete calculation of subgraph size for key ${dependencyGraphKey} because that node does not have a subgraph size!\n\n`);
-    
-    return 1;
-    //throw new Error(`Unable to complete calculation of subgraph size for key ${dependencyGraphKey} because that node does not have a subgraph size!`);
-  }
-
-  return dependencyGraph[dependencyGraphKey].subgraphSize;
-}
-
 module.exports = {
   ingestPackageLockFile,
   makeDependencyGraphKey,
-  makeNode,
+  makeNodeAttributes,
   preprocessPackageList,
   writeJsonToFile,
   getChildren,
-  annotateSubgraphSize,
 };
