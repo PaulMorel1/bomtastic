@@ -125,7 +125,7 @@ module.exports = {
   analyze,
 };
 
-// If called using npx, then run viewBom. Otherwise, do nothing
+// If called using npx, then run bomtastic and save to a file
 // See https://stackoverflow.com/questions/6398196/detect-if-called-through-require-or-directly-by-command-line
 if (require.main === module) {
   SimpleLogger.setVerbose(true);

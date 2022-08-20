@@ -2,9 +2,16 @@
 
 by Evan X. Merz
 
+https://github.com/PaulMorel1/bomtastic
+
 https://www.npmjs.com/package/bomtastic
 
 ## About
+
+TLDR: This package reads a package-lock.json file and returns a
+dependency graph as a [graphology.js](https://www.npmjs.com/package/graphology) graph. It also renders some
+possibly-useful graph statistics into a json file when run using
+npx.
 
 This is a tool I created to try to create a useful representation
 of a software bill of materials that is more programmatically
@@ -19,9 +26,7 @@ spec (top-down).
 
 Top-down specification of SBOMs does make sense, as they 
 are used in top-down software procurement scenarios, such as when
-a hospital wants to purchase a new software tool. The security/privacy 
-specialist may ask for a SBOM, then use it to provide input on the choice
-of a new service.
+a hospital wants to purchase a new software tool.
 
 The problem I'm seeing with the existing specifications is that
 they discard structural information, such as parent-child
@@ -68,7 +73,7 @@ see https://nvd.nist.gov/
 For more detailed reports on npm packages,
 see https://socket.dev/
 
-## Running
+## Running using npx
 
 Bomtastic only requires a package lock file. The first parameter
 is the package lock file. The second parameter is the output file.
@@ -89,6 +94,21 @@ If nothing is provided for either argument, then it will assume
 you are running this from the root directory of your node project.
 It will try to open `package-lock.json` and write to `bom.json` in the
 current directory.
+
+## Using in node
+
+TODO: Write some examples. Why don't you contribute an example here?
+
+pseudocode:
+```
+import analyze from bomtastic;
+let graph = analyze({ 
+  packageLockFilePath: "./package-lock.json", 
+  outputFilePath: "bom.json", 
+  saveToFile: true, 
+  ignoreDev: true });
+// do some graph analysis with the graph
+```
 
 ## Contributing
 
